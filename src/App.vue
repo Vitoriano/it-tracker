@@ -6,6 +6,7 @@
     </div>
 
     <div class="column is-three-quarter">
+      <FormularioBox />
 
     </div>
 
@@ -16,10 +17,13 @@
 
   import { defineComponent } from 'vue';
   import BarraLateral from './components/BarraLateral.vue';
+  import FormularioBox from './components/FormularioBox.vue';
+ 
   export default defineComponent({
     name: 'App',
     components: {
-      BarraLateral
+      BarraLateral,
+      FormularioBox
     }
   });
 
