@@ -3,25 +3,12 @@
     <h1 class="title">
       Projetos
     </h1>
-
-    <form @submit.prevent="salvar">
-      <div class="field">
-        <label class="label" for="nomeDoProjeto">Nome do projeto</label>
-        <input 
-          class="input" 
-          type="text" 
-          placeholder="Nome do projeto" v-model="nomeDoProjeto" 
-          id="nomeDoProjeto"
-        />
-      </div>
-
-      <div class="field">
-        <button class="button" type="submit">
-          Adicionar projeto
-        </button>
-      </div>
-    </form>
-
+    <router-link to="/projetos/novo" class="button">
+      <span class="icon is-small">
+        <i class="fas fa-plus"></i>
+      </span>
+      <span>Novo projeto</span>
+    </router-link>
     <table class="table is-fullwidth">
       <thead>
         <tr>
@@ -35,9 +22,11 @@
           <td>{{ projeto.id }}</td> 
           <td>{{ projeto.nome }}</td>
           <td>
-            <button class="button is-danger">
-              Excluir
-            </button>
+            <router-link :to="`/projetos/${projeto.id}`" class="button">
+              <span class="icon is-small">
+                <i class="fas fa-pencil-alt"></i>
+              </span>
+            </router-link>
           </td>
         </tr>
       </tbody>
@@ -53,22 +42,9 @@
 
   export default defineComponent({
     name: 'Projetos',
-    data() {
-      return {
-        nomeDoProjeto: '',
-      };
-    },
-    methods: {
-      salvar() {
-        this.store.commit('ADICIONAR_PROJETO', 
-        this.nomeDoProjeto)
-        this.nomeDoProjeto = '';
-      },
-    },
     setup() {
       const store = useStore();
       return {
-        store,
         projetos: computed(() => store.state.projects),
       }
     }
