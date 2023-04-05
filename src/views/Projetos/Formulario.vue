@@ -34,6 +34,17 @@
 
   export default defineComponent({
     name: 'Formulario',
+    props: {
+      id: {
+        type: String
+      }
+    },
+    mounted() {
+      if (this.id) {
+        const projeto = this.store.state.projects.find(projeto => projeto.id === this.id);
+        this.nomeDoProjeto = projeto?.nome || '';
+      }
+    },
     data() {
       return {
         nomeDoProjeto: '',
@@ -41,11 +52,21 @@
     },
     methods: {
       salvar() {
-        this.store.commit('ADICIONAR_PROJETO', 
-        this.nomeDoProjeto)
-        this.nomeDoProjeto = '';
 
-        this.$router.push('/projetos');
+        if(this.id) {
+          this.store.commit('EDITAR_PROJETO', {
+            id: this.id,
+            nome: this.nomeDoProjeto
+          });
+          this.$router.push('/projetos');
+          return;
+        }else {
+          this.store.commit('ADICIONAR_PROJETO', 
+          this.nomeDoProjeto)
+          this.nomeDoProjeto = '';
+
+          this.$router.push('/projetos');
+        }
       },
     },
     setup() {
