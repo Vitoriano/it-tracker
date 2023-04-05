@@ -26,8 +26,10 @@
 
 <script lang="ts">
   import { TipoNotificacao } from '@/interfaces/INotificacoes';
-import { useStore } from '@/store';
-import { ADICIONAR_NOTIFICACAO, ADICIONAR_PROJETO, EDITAR_PROJETO } from '@/store/types-mutations';
+  import { notificacaoMixin } from '@/minixs/notificar';
+  import { useStore } from '@/store';
+  import { ADICIONAR_PROJETO, EDITAR_PROJETO } from '@/store/types-mutations';
+  import useNotifiicador  from '@/hooks/notificador';
   import { defineComponent } from 'vue';
 
   export default defineComponent({
@@ -37,6 +39,9 @@ import { ADICIONAR_NOTIFICACAO, ADICIONAR_PROJETO, EDITAR_PROJETO } from '@/stor
         type: String
       }
     },
+    // mixins: [
+    //   notificacaoMixin
+    // ],
     mounted() {
       if (this.id) {
         const projeto = this.store.state.projects.find(projeto => projeto.id === this.id);
@@ -55,25 +60,24 @@ import { ADICIONAR_NOTIFICACAO, ADICIONAR_PROJETO, EDITAR_PROJETO } from '@/stor
             id: this.id,
             nome: this.nomeDoProjeto
           });
+          this.notificar(TipoNotificacao.ATENCAO, 'Sucesso', 'Projeto editado com sucesso');
           this.$router.push('/projetos');
           return;
         }else {
           this.store.commit(ADICIONAR_PROJETO, 
           this.nomeDoProjeto)
           this.nomeDoProjeto = '';
-          this.store.commit(ADICIONAR_NOTIFICACAO, {
-            tipo: TipoNotificacao.SUCESSO,
-            title: 'Sucesso',
-            text: 'Projeto adicionado com sucesso'
-          })
+          this.notificar(TipoNotificacao.SUCESSO, 'Sucesso', 'Projeto adicionado com sucesso');
           this.$router.push('/projetos');
         }
       },
     },
     setup() {
       const store = useStore();
+      const { notificar } = useNotifiicador()
       return {
         store,
+        notificar
       }
     }
   });
