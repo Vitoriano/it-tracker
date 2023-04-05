@@ -1,9 +1,5 @@
 <template>
-  <section class="projetos">
-    <h1 class="title">
-      Projetos
-    </h1>
-
+  <section>
     <form @submit.prevent="salvar">
       <div class="field">
         <label class="label" for="nomeDoProjeto">Nome do projeto</label>
@@ -30,6 +26,7 @@
 
 <script lang="ts">
   import { useStore } from '@/store';
+import { ADICIONAR_PROJETO, EDITAR_PROJETO } from '@/store/types-mutations';
   import { defineComponent } from 'vue';
 
   export default defineComponent({
@@ -52,16 +49,15 @@
     },
     methods: {
       salvar() {
-
         if(this.id) {
-          this.store.commit('EDITAR_PROJETO', {
+          this.store.commit(EDITAR_PROJETO, {
             id: this.id,
             nome: this.nomeDoProjeto
           });
           this.$router.push('/projetos');
           return;
         }else {
-          this.store.commit('ADICIONAR_PROJETO', 
+          this.store.commit(ADICIONAR_PROJETO, 
           this.nomeDoProjeto)
           this.nomeDoProjeto = '';
 
@@ -79,9 +75,3 @@
 
 </script>
 
-<style scoped>
-  .projetos {
-    padding: 1.25rem;
-  }
-
-</style>
