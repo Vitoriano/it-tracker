@@ -41,6 +41,7 @@
 
 <script lang="ts">
   import { useStore } from '@/store';
+import { DELETE_PROJETO, OBTER_PROJETOS } from '@/store/types-actions';
 import { REMOVER_PROJETO } from '@/store/types-mutations';
   import { computed, defineComponent } from 'vue';
 
@@ -48,11 +49,12 @@ import { REMOVER_PROJETO } from '@/store/types-mutations';
     name: 'Lista',
     methods: {
       excluir(id: string) {
-        this.store.commit(REMOVER_PROJETO, id);
+        this.store.dispatch(DELETE_PROJETO, id);
       }
     },
     setup() {
       const store = useStore();
+      store.dispatch(OBTER_PROJETOS);
       return {
         projetos: computed(() => store.state.projects),
         store

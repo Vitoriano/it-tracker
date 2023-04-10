@@ -28,9 +28,10 @@
   import { TipoNotificacao } from '@/interfaces/INotificacoes';
   import { notificacaoMixin } from '@/minixs/notificar';
   import { useStore } from '@/store';
-  import { ADICIONAR_PROJETO, EDITAR_PROJETO } from '@/store/types-mutations';
   import useNotifiicador  from '@/hooks/notificador';
   import { defineComponent } from 'vue';
+import { ALTERAR_PROJETO, CADASTRAR_PROJETO } from '@/store/types-actions';
+import { EDITAR_PROJETO } from '@/store/types-mutations';
 
   export default defineComponent({
     name: 'Formulario',
@@ -44,7 +45,7 @@
     // ],
     mounted() {
       if (this.id) {
-        const projeto = this.store.state.projects.find(projeto => projeto.id === this.id);
+        const projeto = this.store.state.projects.find(projeto => projeto.id == this.id);
         this.nomeDoProjeto = projeto?.nome || '';
       }
     },
@@ -56,21 +57,26 @@
     methods: {
       salvar() {
         if(this.id) {
-          this.store.commit(EDITAR_PROJETO, {
+          this.store.dispatch(ALTERAR_PROJETO, {
             id: this.id,
             nome: this.nomeDoProjeto
-          });
-          this.notificar(TipoNotificacao.ATENCAO, 'Sucesso', 'Projeto editado com sucesso');
-          this.$router.push('/projetos');
-          return;
+          }).then(() => {
+           this.handlerSucesso('alterado');
+          })
+         
         }else {
-          this.store.commit(ADICIONAR_PROJETO, 
-          this.nomeDoProjeto)
-          this.nomeDoProjeto = '';
-          this.notificar(TipoNotificacao.SUCESSO, 'Sucesso', 'Projeto adicionado com sucesso');
-          this.$router.push('/projetos');
+          this.store.dispatch(CADASTRAR_PROJETO, 
+          this.nomeDoProjeto
+          ).then(() => {
+            this.handlerSucesso('adicionado');
+          })
         }
       },
+      handlerSucesso(text: string) {
+        this.nomeDoProjeto = '';
+        this.notificar(TipoNotificacao.SUCESSO, 'Sucesso', `Projeto ${text} com sucesso`);
+        this.$router.push('/projetos');
+      }
     },
     setup() {
       const store = useStore();
