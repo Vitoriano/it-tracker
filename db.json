@@ -11,10 +11,16 @@
     {
       "id": 3,
       "nome": "Projeto 3"
-    },
+    }
+  ],
+  "tarefas": [
     {
-      "nome": "Dev Tracker",
-      "id": 4
+      "tempo": 0,
+      "descricao": "Tarefa 012",
+      "projeto": {
+        "id": 1,
+        "nome": "Projeto 01"
+      }
     }
   ]
 }

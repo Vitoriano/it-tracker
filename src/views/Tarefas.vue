@@ -17,11 +17,13 @@
 
 <script lang="ts">
 
-  import { defineComponent } from 'vue';
+  import { computed, defineComponent } from 'vue';
   import FormularioBox from '../components/FormularioBox.vue';
   import Tarefa from '../components/Tarefa.vue';
   import ITarefa from '../interfaces/ITarefa';
   import Box from '../components/Box.vue';
+  import { OBTER_TAREFAS } from '@/store/types-actions';
+  import { useStore } from '@/store';
 
   export default defineComponent({
     name: 'App',
@@ -30,15 +32,18 @@
       Tarefa,
       Box
     },
-    data() {
-      return {
-        tarefas: [] as ITarefa[],
-      }
-    },
     methods: {
       adicionarTarefa(tarefa: ITarefa) {
         this.tarefas.push(tarefa);
       },
+    },
+    setup() {
+      const store = useStore();
+      store.dispatch(OBTER_TAREFAS);
+      return {
+        tarefas: computed(() => store.state.tarefas),
+        store
+      }
     },
     computed:{
       listaEstaVazia(): boolean {

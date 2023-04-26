@@ -3,12 +3,14 @@ import IProjeto from "@/interfaces/IProjetos";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import http from "@/http";
-import { ALTERAR_PROJETO, CADASTRAR_PROJETO, DELETE_PROJETO, OBTER_PROJETOS } from "./types-actions";
+import { ALTERAR_PROJETO, CADASTRAR_PROJETO, DEFINIR_TAREFA, DELETE_PROJETO, OBTER_PROJETOS, OBTER_TAREFAS } from "./types-actions";
 import { ADICIONAR_NOTIFICACAO, ADICIONAR_PROJETO, CARREGAR_PROJETOS, EDITAR_PROJETO, REMOVER_PROJETO } from "./types-mutations";
+import ITarefa from "@/interfaces/ITarefa";
 
 interface IState {
   projects: IProjeto[];
   notificacoes: INotificacoes[];
+  tarefas: ITarefa[];
 }
 
 export const key: InjectionKey<Store<IState>> = Symbol();
@@ -16,7 +18,8 @@ export const key: InjectionKey<Store<IState>> = Symbol();
 export const store = createStore<IState>({
   state: {
     projects: [],
-    notificacoes: []
+    notificacoes: [],
+    tarefas: [],
   },
   mutations: {
     [ADICIONAR_PROJETO]: 
@@ -29,7 +32,7 @@ export const store = createStore<IState>({
 
       state.projects.push(projeto);
     },
-   [EDITAR_PROJETO]: (state, projeto: IProjeto) => {
+    [EDITAR_PROJETO]: (state, projeto: IProjeto) => {
       const index = state.projects.findIndex(p => p.id === projeto.id);
       state.projects[index] = projeto;
     },
@@ -47,7 +50,11 @@ export const store = createStore<IState>({
     },
     [CARREGAR_PROJETOS]: (state, projetos: IProjeto[]) => {
       state.projects = projetos;
-    }
+    },
+    [DEFINIR_TAREFA]: 
+    (state, tarefas: ITarefa[]) => {
+      state.tarefas = tarefas;
+    },
   },
   actions: {
     [OBTER_PROJETOS]({ commit }) {
@@ -71,7 +78,13 @@ export const store = createStore<IState>({
         .then(() => {
           commit(REMOVER_PROJETO, id);
         });
-    }
+    },
+    [OBTER_TAREFAS]({ commit }) {
+      http.get("tarefas")
+        .then(response => {
+          commit(DEFINIR_TAREFA, response.data);
+        });
+    },
   }
 })
 
